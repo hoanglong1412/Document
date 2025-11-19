@@ -16,7 +16,6 @@
 ## 1. Rebase
 **Tool:** Git Extensions  
 **Usage:** Reorder, rename, fixup, or remove commits.
-
 **Steps:**
 1. Right-click the commit you want to rebase onto.
 2. Select **Rebase current branch on → Select commit interactively…**
@@ -80,7 +79,7 @@
 4. Commit using **Amend**.
 5. Continue rebase + resolve conflicts.
 <img width="5501" height="2769" alt="image" src="https://github.com/user-attachments/assets/a1a3eb23-6d76-44cf-830d-68acf00be663" />
-<img width="3072" height="699" alt="image" src="https://github.com/user-attachments/assets/3932a167-82db-4d17-877d-c55c0bba3fca" />
+
 
 ---
 
@@ -95,7 +94,7 @@
 
 **Note:**  
 Reset to normal: `git sparse-checkout disable`
-<img width="3042" height="2552" alt="image" src="https://github.com/user-attachments/assets/43a74d32-6f6f-4913-bd5c-2904380e7a60" />
+<img width="3072" height="699" alt="image" src="https://github.com/user-attachments/assets/3932a167-82db-4d17-877d-c55c0bba3fca" />
 
 ---
 
@@ -107,7 +106,7 @@ Reset to normal: `git sparse-checkout disable`
 - **Command:** `git diff commit1 commit2 > FileChanges.diff`
 - **Git Extensions:** **Format patch…**
 - **TortoiseGit:** **Create Patch Serial…**
-
+<img width="3042" height="2552" alt="image" src="https://github.com/user-attachments/assets/43a74d32-6f6f-4913-bd5c-2904380e7a60" />
 ---
 
 ## 9. Bundle
