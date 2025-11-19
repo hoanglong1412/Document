@@ -1,4 +1,4 @@
-# Git turtotial
+<img width="31" height="49" alt="image" src="https://github.com/user-attachments/assets/f3cdc532-c1f5-4306-b18f-0b43cb179caf" /># Git turtotial
 
 ## 1. Rebase
 **Tool:** Git extensions
@@ -34,7 +34,7 @@
 <img width="1612" height="768" alt="image" src="https://github.com/user-attachments/assets/c3fcc3c9-70d7-4336-acae-931e4c011221" />
 
 ## 4. RefLog
-**Tool:** Git extensions
+**Tool:** TortoiseGit
 
 **Usage:** Show history git change, can use this to fix "rebase|force push|.." mistake
 
@@ -42,6 +42,15 @@
 
 <img width="1893" height="1229" alt="image" src="https://github.com/user-attachments/assets/461231fc-45a3-42dc-a86f-a39e91468054" />
 
+## 5.Export Src
+**Tool:** Git extensions && TortoiseGit
 
+**Usage:** Export source from commit to files
+
+**Step:**: 
+- Way 1: Use git extensions - Choose `Archive this commit…` (default: zip all src code)
+- Way 2: Use tortoise git - Choose `Export selection to…`
+<img width="3167" height="1145" alt="image" src="https://github.com/user-attachments/assets/ab215721-cc91-445e-9349-8b8130c1f8c2" />
+<img width="1856" height="983" alt="image" src="https://github.com/user-attachments/assets/e9b30efc-6c5f-4e86-a3ed-e24ffeff010e" />
 
 
