@@ -66,5 +66,6 @@
 - Step 4: Commit with amend to combine the working directory with the edit commit
 - Step 5: Continue Rebase + Resolve conflict
 
-![Uploading image.png…]()
+<img width="5501" height="2769" alt="image" src="https://github.com/user-attachments/assets/a1a3eb23-6d76-44cf-830d-68acf00be663" />
+
 
