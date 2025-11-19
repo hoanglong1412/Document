@@ -17,6 +17,7 @@
 ## 1. Rebase
 **Tool:** Git Extensions  
 **Usage:** Reorder, rename, fixup, or remove commits.
+
 **Steps:**
 1. Right-click the commit you want to rebase onto.
 2. Select **Rebase current branch on → Select commit interactively…**
