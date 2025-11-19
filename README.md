@@ -124,7 +124,7 @@ Reset to normal: `git sparse-checkout disable`
 
 ## 10. Git Hook
 **Tool:** No
-**Usage:**Trigger custom scripts when Git performs an action (commit, push, merge,…).
+**Usage:** Trigger custom scripts when Git performs an action (commit, push, merge,…).
 
 **Steps:**
 1. Open the .git/hooks folder.
