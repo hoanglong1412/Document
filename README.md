@@ -1,4 +1,4 @@
-<img width="31" height="49" alt="image" src="https://github.com/user-attachments/assets/f3cdc532-c1f5-4306-b18f-0b43cb179caf" /># Git turtotial
+# Git turtotial
 
 ## 1. Rebase
 **Tool:** Git extensions
@@ -29,7 +29,7 @@
 
 **Usage:** Rename commit
 
-**Step:**: Choose `Reword commit`
+**Step:** Choose `Reword commit`
 
 <img width="1612" height="768" alt="image" src="https://github.com/user-attachments/assets/c3fcc3c9-70d7-4336-acae-931e4c011221" />
 
@@ -38,19 +38,33 @@
 
 **Usage:** Show history git change, can use this to fix "rebase|force push|.." mistake
 
-**Step:**: Step: Choose `Show Reflog`
+**Step:** Step: Choose `Show Reflog`
 
 <img width="1893" height="1229" alt="image" src="https://github.com/user-attachments/assets/461231fc-45a3-42dc-a86f-a39e91468054" />
 
-## 5.Export Src
+## 5. Export Src
 **Tool:** Git extensions && TortoiseGit
 
 **Usage:** Export source from commit to files
 
-**Step:**: 
+**Step:** 
 - Way 1: Use git extensions - Choose `Archive this commit…` (default: zip all src code)
 - Way 2: Use tortoise git - Choose `Export selection to…`
 <img width="3167" height="1145" alt="image" src="https://github.com/user-attachments/assets/ab215721-cc91-445e-9349-8b8130c1f8c2" />
 <img width="1856" height="983" alt="image" src="https://github.com/user-attachments/assets/e9b30efc-6c5f-4e86-a3ed-e24ffeff010e" />
 
+
+## 6. Edit Commit
+**Tool:** Git extensions
+
+**Usage:** Edit code of Commit
+
+**Step:** 
+- Step 1: Choose `Edit commit`
+- Step 2: Edit sth you want in working directory
+- Step 3: Click on `You are in the middle of a rebase`
+- Step 4: Commit with amend to combine the working directory with the edit commit
+- Step 5: Continue Rebase + Resolve conflict
+
+![Uploading image.png…]()
 
