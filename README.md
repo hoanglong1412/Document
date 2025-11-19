@@ -135,3 +135,12 @@ Reset to normal: `git sparse-checkout disable`
 5. Save — Git auto-triggers it during that action.
 
 ---
+
+## 9. Bundle
+**Tool:** Command  
+**Usage:** Save repo into a single portable file; clone without internet.
+
+**Steps:**
+ccc
+
+---
