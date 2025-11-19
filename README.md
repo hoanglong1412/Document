@@ -10,7 +10,7 @@
 7. [Checkout Path](#7-checkout-path)
 8. [Create Patch](#8-create-patch)
 9. [Bundle](#9-bundle)
-10. [Git Hook](#9-git-hook)
+10. [Git Hook](#10-git-hook)
 
 ---
 
@@ -123,8 +123,6 @@ Reset to normal: `git sparse-checkout disable`
 ---
 
 ## 10. Git Hook
-**Tool:** Command  
-**Usage:** Save repo into a single portable file; clone without internet.
 **Tool:** No
 **Usage:** Trigger custom scripts when Git performs an action (commit, push, merge,…).
 
