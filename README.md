@@ -68,4 +68,42 @@
 
 <img width="5501" height="2769" alt="image" src="https://github.com/user-attachments/assets/a1a3eb23-6d76-44cf-830d-68acf00be663" />
 
+## 6. Checkout path
+**Tool:** Git extensions
+
+**Usage:** Checkout path (not full repo)
+
+**Step:** 
+- Step 1: Clone with "no-checkout" (optional - just do in clone case)	
+- Step 2: Use command define the part you want to checkout `git sparse-checkout set Some_File_Or_Folder_Path`
+- Step 3: Checkout (It always get the folder that add in sparse-checkout)
+- 
+**Note:**	Use command `git sparse-disable` to checkout all src like default
+  
+<img width="3072" height="699" alt="image" src="https://github.com/user-attachments/assets/3932a167-82db-4d17-877d-c55c0bba3fca" />
+
+## 7. Create Patch (diff file)
+**Tool:** Command && Git extensions && TortoiseGit
+
+**Usage:** Export `*.path` file, can use to review code or send another member to commit
+
+**Step:** 
+- Way 1: Use Command - input `Git diff commit1 commit2 > FileChanges.diff`
+- Way 2: Use Git extensions - Choose `Format patch...`
+- Way 3: Use TortoiseGit - Choose `Creat Patch Serial...`
+
+<img width="3042" height="2552" alt="image" src="https://github.com/user-attachments/assets/43a74d32-6f6f-4913-bd5c-2904380e7a60" />
+
+## 8. Bundle
+**Tool:** Command 
+
+**Usage:** Store the repo git => Can use this file to clone+checkout source without internet
+
+**Step:** 
+- Step 1: Use command to create bundle file	`git bundle create YourBundleName.bundle YourBranch`
+- Step 2: Use command to clone source by bundle file  `git clone YourBundleName.bundle Your_Path`
+
+<img width="2270" height="1144" alt="image" src="https://github.com/user-attachments/assets/14e66f95-1a34-47d9-8e71-8aaa666d5168" />
+
+
 
