@@ -10,6 +10,7 @@
 7. [Checkout Path](#7-checkout-path)
 8. [Create Patch](#8-create-patch)
 9. [Bundle](#9-bundle)
+10. [Git Hook](#9-git-hook)
 
 ---
 
@@ -117,4 +118,18 @@ Reset to normal: `git sparse-checkout disable`
 1. Create bundle: `git bundle create MyRepo.bundle <branch>`
 2. Clone bundle: `git clone MyRepo.bundle <path>`
 <img width="2270" height="1144" alt="image" src="https://github.com/user-attachments/assets/14e66f95-1a34-47d9-8e71-8aaa666d5168" />
+
+---
+
+## 10. Git Hook
+**Tool:** No
+**Usage:**Trigger custom scripts when Git performs an action (commit, push, merge,…).
+
+**Steps:**
+1. Open the .git/hooks folder.
+2. Pick the hook you need (e.g., pre-commit, pre-push, post-merge).
+3. Remove the .sample extension if present.
+4. Add your script logic (bash, PowerShell, etc.).
+5. Save — Git auto-triggers it during that action.
+
 ---
