@@ -123,6 +123,8 @@ Reset to normal: `git sparse-checkout disable`
 ---
 
 ## 10. Git Hook
+**Tool:** Command  
+**Usage:** Save repo into a single portable file; clone without internet.
 **Tool:** No
 **Usage:** Trigger custom scripts when Git performs an action (commit, push, merge,…).
 
