@@ -123,8 +123,7 @@ Reset to normal: `git sparse-checkout disable`
 ---
 
 ## 10. Git Hook
-**Tool:** No
-
+**Tool:** No  
 **Usage:** Trigger custom scripts when Git performs an action (commit, push, merge,…).
 
 **Steps:**
@@ -133,14 +132,5 @@ Reset to normal: `git sparse-checkout disable`
 3. Remove the .sample extension if present.
 4. Add your script logic (bash, PowerShell, etc.).
 5. Save — Git auto-triggers it during that action.
-
----
-
-## 9. Bundle
-**Tool:** Command  
-**Usage:** Save repo into a single portable file; clone without internet.
-
-**Steps:**
-ccc
 
 ---
