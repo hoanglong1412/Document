@@ -15,7 +15,9 @@
 
 ## 2. Pull Rebase
 **Tool:** Git extensions
+
 **Usage:** Pull source and pick your code to top
+
 **Step:**
 - Step 1: Choose `Open pull dialog…`
 - Step 2: Choose `Rebase current branch on top remote branch, creates linear history (use with caution)`
@@ -24,14 +26,18 @@
 
 ## 3. Rename Commit
 **Tool:** Git extensions
+
 **Usage:** Rename commit
+
 **Step:**: Choose `Reword commit`
 
 <img width="1612" height="768" alt="image" src="https://github.com/user-attachments/assets/c3fcc3c9-70d7-4336-acae-931e4c011221" />
 
 ## 4. RefLog
 **Tool:** Git extensions
+
 **Usage:** Show history git change, can use this to fix "rebase|force push|.." mistake
+
 **Step:**: Step: Choose `Show Reflog`
 
 <img width="1893" height="1229" alt="image" src="https://github.com/user-attachments/assets/461231fc-45a3-42dc-a86f-a39e91468054" />
