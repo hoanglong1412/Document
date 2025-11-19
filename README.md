@@ -2,7 +2,9 @@
 
 ## 1. Rebase
 **Tool:** Git extensions
+
 **Usage:** Rebase (rename/delete/arrange/.... commit)
+
 **Step:**
 - Step 1: Right click at commit base
 - Step 2: Choose `Rebase current branch on` then choose `Select commit interactively…`	
