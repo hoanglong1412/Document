@@ -1107,22 +1107,9 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 
 ---
 
-## 📦 6. STL
+## 6. STL
 
-### Containers
-
-* `vector`
-* `array`
-* `deque`
-* `list`
-* `forward_list`
-* `set`
-* `map`
-* `unordered_map`
-* `unordered_set`
-* `priority_queue`
-* `bitset`
-
+<details> <summary>Containers</summary>
 
 | Container | Cấu trúc bộ nhớ (Memory Layout) | Cache Locality | Truy cập ngẫu nhiên `[i]` | Chèn / Xóa ở Đầu | Chèn / Xóa ở Cuối | Chèn / Xóa ở Giữa |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -1153,7 +1140,7 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 ```text
 [ Cache Line = 64 bytes ] ───► Nạp nguyên một block này vào L1/L2 Cache cùng lúc
 ┌───────────┬───────────┬───────────┬───────────┬───────────┐
-│  Data[0]  │  Data[1]  │  Data[2]  │  Data[3]  │  Data[4]  │ ... 연속 (Continuous Memory)
+│  Data[0]  │  Data[1]  │  Data[2]  │  Data[3]  │  Data[4]  │ ...  (Continuous Memory)
 └───────────┴───────────┴───────────┴───────────┴───────────┘
 ```
 
@@ -1269,17 +1256,232 @@ Cấu trúc Logic (Cây Heap):             Cấu trúc Vật lý thực tế tro
  ◄───────────────────────── 8 bytes duy nhất ──────────────────────►
  (Có thể nạp toàn bộ hàng ngàn bit vào L1 Cache chỉ trong vài chu kỳ CPU)
 ```
+#### </details> <!-- end --> 
 
 
 ### Algorithms
 
-* `sort`
-* `find`
-* `binary_search`
-* `lower_bound`
-* `upper_bound`
-* `transform`
-* `accumulate`
+<details> <summary>std::sort</summary>
+
+#### 📘 Explanation
+Sắp xếp các phần tử trong một khoảng `[first, last)` theo thứ tự tăng dần hoặc theo một hàm so sánh (`compare`) tùy biến.
+- **Độ phức tạp**: $O(N \log N)$ cho cả trường hợp trung bình và tệ nhất (thường sử dụng **IntroSort** - kết hợp QuickSort, HeapSort và InsertionSort).
+- **Bộ nhớ phụ trợ**: $O(\log N)$ do đệ quy.
+- **Lưu ý**: `std::sort` không giữ nguyên thứ tự ban đầu của các phần tử bằng nhau (không ổn định). Nếu cần giữ thứ tự, hãy dùng `std::stable_sort`.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> vec = {5, 2, 9, 1, 5, 6};
+    
+    // Sắp xếp tăng dần
+    std::sort(vec.begin(), vec.end()); // {1, 2, 5, 5, 6, 9}
+    
+    // Sắp xếp giảm dần sử dụng Lambda
+    std::sort(vec.begin(), vec.end(), [](int a, int b) {
+        return a > b;
+    }); // {9, 6, 5, 5, 2, 1}
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::find</summary>
+
+#### 📘 Explanation
+Tìm kiếm tuyến tính (Linear Search) phần tử đầu tiên trong khoảng `[first, last)` có giá trị bằng `value`.
+- **Độ phức tạp**: $O(N)$ trong trường hợp tệ nhất (phải duyệt qua toàn bộ container).
+- **Cơ chế**: Duyệt tuần tự từ đầu đến cuối. Thích hợp cho các container chưa được sắp xếp như `std::vector`, `std::list`.
+- **Trả về**: Một iterator trỏ đến phần tử tìm thấy đầu tiên. Nếu không tìm thấy, trả về `last` (end iterator).
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> vec = {10, 20, 30, 40, 50};
+    
+    auto it = std::find(vec.begin(), vec.end(), 30);
+    
+    if (it != vec.end()) {
+        std::cout << "Tim thay tai vi tri: " << std::distance(vec.begin(), it) << "\n";
+    } else {
+        std::cout << "Khong tim thay\n";
+    }
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::binary_search</summary>
+
+#### 📘 Explanation
+Kiểm tra xem một phần tử có tồn tại trong khoảng **đã được sắp xếp** `[first, last)` hay không bằng thuật toán Tìm kiếm nhị phân (Binary Search).
+- **Độ phức tạp**: $O(\log N)$ nếu container hỗ trợ Random Access Iterator (như `std::vector`), $O(N)$ nếu là Forward Iterator (như `std::list`).
+- **Lưu ý**: Container **bắt buộc phải được sắp xếp trước** khi gọi hàm này. Nếu chưa sắp xếp, kết quả trả về sẽ không chính xác (Undefined Behavior).
+- **Trả về**: Kiểu `bool` (`true` nếu tìm thấy, `false` nếu không tìm thấy). Hàm này không trả về vị trí của phần tử.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> vec = {1, 3, 5, 7, 9, 11}; // Da sap xep
+    
+    bool found = std::binary_search(vec.begin(), vec.end(), 7);
+    
+    if (found) {
+        std::cout << "Phan tu 7 ton tai trong mang\n";
+    } else {
+        std::cout << "Khong tim thay 7\n";
+    }
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::lower_bound</summary>
+
+#### 📘 Explanation
+Tìm phần tử đầu tiên trong một khoảng **đã được sắp xếp** `[first, last)` mà có giá trị **lớn hơn hoặc bằng** ( $\ge$ ) `value` truyền vào.
+- **Độ phức tạp**: $O(\log N)$ với Random Access Iterator.
+- **Cơ chế**: Sử dụng Binary Search để thu hẹp phạm vi tìm kiếm.
+- **Trả về**: Iterator trỏ đến phần tử thỏa mãn. Nếu tất cả các phần tử đều nhỏ hơn `value`, hàm trả về `last`.
+- **Ứng dụng**: Xác định vị trí chèn một phần tử mới mà vẫn giữ nguyên thứ tự sắp xếp của mảng.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> vec = {10, 20, 30, 30, 40, 50}; // Da sap xep
+    
+    // Tim phan tu dau tien >= 30
+    auto it = std::lower_bound(vec.begin(), vec.end(), 30);
+    
+    std::cout << "Phan tu >= 30 dau tien tai chi so: " << std::distance(vec.begin(), it) << "\n"; // Chi so: 2
+    std::cout << "Gia tri: " << *it << "\n"; // Gia tri: 30
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::upper_bound</summary>
+
+#### 📘 Explanation
+Tìm phần tử đầu tiên trong một khoảng **đã được sắp xếp** `[first, last)` mà có giá trị **lớn hơn hẳn** ( $>$ ) `value` truyền vào.
+- **Độ phức tạp**: $O(\log N)$ với Random Access Iterator.
+- **Điểm khác biệt với lower_bound**: `lower_bound` lấy $\ge$, còn `upper_bound` lấy $>$. Do đó, khoảng `[lower_bound, upper_bound)` sẽ chứa toàn bộ các phần tử bằng chính xác `value` (bằng với hàm `std::equal_range`).
+- **Trả về**: Iterator trỏ đến phần tử đầu tiên thỏa mãn. Nếu không có phần tử nào lớn hơn `value`, trả về `last`.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> vec = {10, 20, 30, 30, 40, 50}; // Da sap xep
+    
+    // Tim phan tu dau tien > 30
+    auto it = std::upper_bound(vec.begin(), vec.end(), 30);
+    
+    std::cout << "Phan tu > 30 dau tien tai chi so: " << std::distance(vec.begin(), it) << "\n"; // Chi so: 4
+    std::cout << "Gia tri: " << *it << "\n"; // Gia tri: 40
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::transform</summary>
+
+#### 📘 Explanation
+Áp dụng một hàm toán học hoặc một phép biến đổi (Unary / Binary Operation) lên từng phần tử trong một khoảng và lưu kết quả vào một container đích (được chỉ định bởi output iterator).
+- **Độ phức tạp**: $O(N)$ - thực hiện đúng $N$ lần phép biến đổi.
+- **Đặc điểm**: Rất mạnh mẽ khi cần map dữ liệu từ dạng này sang dạng khác (ví dụ: biến đổi toàn bộ chuỗi thành chữ hoa, nhân đôi giá trị các phần tử, v.v.).
+- **Lưu ý**: Container đích phải có đủ kích thước trước khi ghi đè, hoặc phải sử dụng `std::back_inserter` để chèn tự động.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> src = {1, 2, 3, 4, 5};
+    std::vector<int> dest;
+    
+    // Nhan doi moi phan tu va chèn vao dest
+    std::transform(src.begin(), src.end(), std::back_inserter(dest), [](int x) {
+        return x * 2;
+    }); // dest se la {2, 4, 6, 8, 10}
+    
+    // Bien doi truc tiep tren mang src (In-place)
+    std::transform(src.begin(), src.end(), src.begin(), [](int x) {
+        return x + 10;
+    }); // src se la {11, 12, 13, 14, 15}
+    
+    return 0;
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>std::accumulate</summary>
+
+#### 📘 Explanation
+Tính tổng (hoặc tích lũy bằng một phép toán tùy chọn) của tất cả các phần tử trong một khoảng `[first, last)` bắt đầu bằng một giá trị khởi tạo `init`.
+- **Độ phức tạp**: $O(N)$ - duyệt qua từng phần tử một lần.
+- **Thư viện phụ thuộc**: Nằm trong `<numeric>` (không phải `<algorithm>`).
+- **Lưu ý quan trọng**: Kiểu dữ liệu trả về dựa hoàn toàn vào kiểu dữ liệu của `init`. Nếu tính tổng mảng số thực `float` nhưng truyền `init` là số nguyên `0` (kiểu `int`), kết quả sẽ bị làm tròn mất phần thập phân sau mỗi bước. Do đó, hãy truyền `0.0` hoặc `0.0f` nếu làm việc với số thực.
+
+#### 💻 Code Example
+```cpp
+#include <iostream>
+#include <vector>
+#include <numeric> // Bat buoc phai co cho accumulate
+
+int main() {
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+    
+    // Tinh tong thong thuong voi gia tri khoi tao la 0
+    int sum = std::accumulate(vec.begin(), vec.end(), 0); // 15
+    
+    // Tinh tich cac phan tu dung Lambda custom
+    int product = std::accumulate(vec.begin(), vec.end(), 1, [](int a, int b) {
+        return a * b;
+    }); // 1 * 1 * 2 * 3 * 4 * 5 = 120
+    
+    return 0;
+}
+```
+</details> <!-- end -->
 
 ### Iterator
 
