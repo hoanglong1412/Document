@@ -1,17 +1,4 @@
-```
-<details> <summary><i style="color: grey">xxx</i></summary></details>
-```
-
-```
-<details> <summary>Tile</summary>
-
-#### 📘 Explanation
-Content
-
-#### </details> <!-- end --> 
-```
-
-# C++ Interview Checklist / Keywords Roadmap
+# C++ 
 
 ## 1. Core C++ Fundamentals
 
@@ -224,11 +211,17 @@ struct A {
 
 #### 📘 Explanation
 
-* direct `T obj(arg)` -> call constructor
-* copy `T obj = arg` -> call constructor (nếu khác explicit)
-* uniform `T obj{arg}` -> should use
+* direct T obj(arg) -> call constructor
+* copy T obj = arg -> call constructor (nếu khác explicit)
+* direct-list initialization T obj{arg} -> should use
+* copy-list initialization T obj = {arg} -> (nếu khác explicit)
 
-#### </details> <!-- end --> 
+Note: 
+* Tất cả đều gọi constructor chứ không gọi operator
+* Nếu có dấu bằng thì không được gọi nếu khác explicit
+* Nên dùng direct-list initialization vì sẽ tránh được narrowing conversion (Tự convert làm sai giá trị, `ví dụ: int a = 3.14 => a = 3`)
+
+#### </details> <!-- end -->
 
 ---
 
@@ -411,7 +404,7 @@ class Derived : private Base    // -> Chuyển tất cả thành phần public/p
 
 #### 📘 Explanation
 Cơ chế giúp C++ thực hiện đa hình động (**Dynamic Binding**) tại thời điểm Runtime:
-* **Vtable (Virtual Table):** Một bảng tĩnh được tạo ra cho mỗi Class có chứa hàm `virtual`, lưu trữ danh sách các con trỏ hàm trỏ tới các hàm virtual tương ứng.
+* **Vtable (Virtual Table):** Một bảng tĩnh được tạo ra cho mỗi Class có chứa hàm `virtual`, lưu trữ danh sách các con trỏ hàm trỏ tới các hàm virtual tương ứng. Được lưu ở readonly segment
 * **Vptr (Virtual Table Pointer):** Một con trỏ ẩn được tự động thêm vào bên trong mỗi **đối tượng** (instance). Nó trỏ thẳng tới bảng `Vtable` của Class đó để tra cứu hàm cần gọi khi Runtime.
 
 ```text
@@ -1109,7 +1102,9 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 
 ## 6. STL
 
-<details> <summary>Containers</summary>
+### Container
+
+<details> <summary>Overview</summary>
 
 | Container | Cấu trúc bộ nhớ (Memory Layout) | Cache Locality | Truy cập ngẫu nhiên `[i]` | Chèn / Xóa ở Đầu | Chèn / Xóa ở Cuối | Chèn / Xóa ở Giữa |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -1128,11 +1123,12 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 * `**`: Với điều kiện đã tìm thấy và có con trỏ/iterator tại vị trí cần chèn/xóa.
 * `***`: `forward_list` thao tác thông qua hàm `insert_after()` và `erase_after()`.
 
+#### </details> <!-- end --> 
+
 ---
 
-# 🏗️ CẤU TRÚC BỘ NHỚ VÀ ASCII CHART CHI TIẾT
 
-## 1. Sequence Containers (Bộ nhớ liên tục & Kế cận)
+<details> <summary>Sequence Container (Bộ nhớ liên tục & Kế cận)</summary>
 
 ### 🔹 std::array & std::vector
 > Toàn bộ data nằm xếp hàng sát nhau trong một khối nhớ duy nhất. Tận dụng tối đa 100% Cache Line khi duyệt qua.
@@ -1159,9 +1155,11 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
      └───┴───┴───┘                    └───┴───┴───┘
 ```
 
+#### </details> <!-- end --> 
+
 ---
 
-## 2. Node-based Containers (Bộ nhớ phân mảnh, nhảy con trỏ)
+<details> <summary>Node-based Containers (Bộ nhớ phân mảnh, nhảy con trỏ)</summary>
 
 ### 🔹 std::list (Doubly Linked List)
 > Các node nằm tự do, rải rác trên Heap. Phải đi qua con trỏ để tìm phần tử tiếp theo \(\rightarrow\) Gây Cache Miss cực nặng.
@@ -1185,9 +1183,11 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 └──────────────┘      └──────────────┘      └──────────────┘
 ```
 
+#### </details> <!-- end --> 
+
 ---
 
-## 3. Associative Containers (Cấu trúc Cây & Bảng băm)
+<details> <summary>Associative Containers (Cấu trúc Cây & Bảng băm)</summary>
 
 ### 🔹 std::set / std::map (Red-Black Tree)
 > Cây nhị phân tìm kiếm cân bằng. Các Node phân mảnh trên Heap, liên kết nhau qua các pointer `Left`, `Right`, `Parent`.
@@ -1225,9 +1225,11 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
            └─────────────┘
 ```
 
+#### </details> <!-- end --> 
+
 ---
 
-## 4. Container Adapters & Bit manipulation
+<details> <summary>Container Adapters & Bit manipulation</summary>
 
 ### 🔹 std::priority_queue (Max-Heap biểu diễn trên Vector)
 > Logic là một cây nhị phân hoàn chỉnh (Heap), nhưng cấu trúc vật lý được làm "phẳng" và lưu trữ xếp liền nhau bên trong một `std::vector` \(\rightarrow\) Tận dụng tối đa Cache Locality.
@@ -1258,6 +1260,7 @@ Cấu trúc Logic (Cây Heap):             Cấu trúc Vật lý thực tế tro
 ```
 #### </details> <!-- end --> 
 
+---
 
 ### Algorithms
 
@@ -1483,65 +1486,236 @@ int main() {
 ```
 </details> <!-- end -->
 
-### Iterator
+---
 
-* Iterator category
-* Invalid iterator
-* Reverse iterator
+## 7. Template & Metaprogramming
 
-### Functor
+<details> <summary>Function template </summary>
 
-* Comparator
-* Predicate
+#### 📘 Explanation
+* khuôn mẫu
+* sinh code lúc complile
+* chỉ sinh những hàm được dùng
+* viết ở file `.h` , viết ở `.cpp` vẫn được ở Th đặc biệt
+
+```cpp
+template<typename T>    // option 1
+template<class T>       // option 2
+T add(T a, T b)
+{
+    return a + b;
+}
+```
+
+</details> <!-- end -->
 
 ---
 
-## 🔥 7. Template & Metaprogramming
-
-* Function template
-* Class template
-* Template specialization
-* Partial specialization
-* Variadic template
-* SFINAE
-* CRTP
-* TMP (Template Meta Programming)
-* Fold expression
-* Perfect forwarding
+<details> <summary><i style="color: grey">Class template (tương tự trên nhưng cho class)</i></summary></details>
 
 ---
 
-## 🖥️ 8. OS / System / Low-Level
+<details> <summary>Template specialization </summary>
 
-* System call
-* Context switch
-* Kernel vs User mode
-* Process memory layout
-* Static library
-* Dynamic library
-* Symbol linking
-* ABI
-* Name mangling
-* Compiler stages
-* Assembly basics
-* CPU cache
-* SIMD
-* Undefined behavior
+#### 📘 Explanation
+Viết phiên bảng riêng cho kiểu dữ liệu nhất định
+
+```cpp
+template<>
+void print<bool>(bool value)
+{
+    std::cout << (value ? "true" : "false");
+}
+```
+</details> <!-- end -->
 
 ---
 
-## 🧪 9. Debugging / Performance
+<details> <summary><i style="color: grey">Partial specialization (Not Yet)</i></summary></details>
 
-* GDB
-* Valgrind
-* Address Sanitizer
-* Thread Sanitizer
-* Benchmark
-* Profiling
-* Cache miss
-* False sharing
-* Big-O
-* Branch prediction
+---
+
+<details> <summary><i style="color: grey">Variadic template (Nhận N tham số)</i></summary></details>
+
+---
+
+<details> <summary>SFINAE (Substitution Failure Is Not An Error)</summary>
+
+#### 📘 Explanation
+Lỗi thay thế không phải là lỗi. Đây là một nguyên tắc cốt lõi trong ngôn ngữ C++ (đặc biệt trong Template Metaprogramming). Nguyên tắc này quy định rằng: khi trình biên dịch cố gắng thay thế một kiểu dữ liệu vào khuôn mẫu (template) và gặp lỗi, thay vì báo lỗi biên dịch (như thường lệ), nó sẽ lẳng lặng loại bỏ khuôn mẫu đó và tiếp tục tìm kiếm các lựa chọn (overload) khác phù hợp hơn
+
+```cpp
+#include <iostream>
+#include <type_traits>
+
+// Hàm chỉ được chọn nếu T là kiểu số nguyên
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, void>::type
+print(T t) {
+    std::cout << "So nguyen: " << t << "\n";
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary>CRTP (Curiously Recurring Template Pattern)</summary>
+
+#### 📘 Explanation
+là một mẫu thiết kế trong C++, nơi một lớp dẫn xuất (Derived Class) kế thừa từ một lớp mẫu (Class Template), và chính lớp dẫn xuất đó lại được truyền vào làm tham số mẫu cho lớp cơ sở (Base Class)
+* Đa hình tĩnh
+* Đa hình lúc compile
+
+```cpp
+template <typename T>
+class Base {
+public:
+    void interface() {
+        // Ép kiểu `this` thành con trỏ của lớp dẫn xuất
+        static_cast<T*>(this)->implementation();
+    }
+};
+
+class Derived : public Base<Derived> {
+public:
+    void implementation() { /* Thực thi cụ thể */ }
+};
+
+//---
+int main() {
+    Derived obj;
+    obj.interface();
+}
+```
+</details> <!-- end -->
+
+---
+
+<details> <summary><i style="color: grey">TMP (Template Meta Programming) - Dùng template để tính lúc compile (giờ đã được thay 1 phần bởi constexpr</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Fold expression (cú pháp C++17 để gộp param pack ...)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Perfect forwarding (truyền đúng kiểu dữ liệu (Lvalue/Rvalue) bằng std::forward</i></summary></details>
+
+---
+
+## 8. OS / System / Low-Level
+
+<details> <summary><i style="color: grey">System call (User Mode yêu cầu Kernel làm việc (thao tác trên RAM, đọc file..))</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Context switch (chuyển ngữ cảnh, chuyển thread)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Kernel vs User mode (1 cái tác động được tới hard, 1 cái không)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Process memory layout (Memory Layout)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Static library .lib (thư viện tĩnh, add vào src làm nặng src)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Dynamic library .dll (thư viện động, load runtime)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Symbol linking (khi build thì ra các symbol như ?Draw@@YAXXZ, linker tìm Declaration/Definition để nối)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">ABI ??? (learn later)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Name mangling (tự gen tên hàm khi compile, xử lý cho overloading biết gọi hàm nào)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Name mangling (tự gen tên hàm khi compile, xử lý cho overloading biết gọi hàm nào)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Compiler stages - thứ tự compile (source -> preprocessor -> compiler -> assembler -> linker -> exe/dll)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Assembly basics ??? (learn later) </i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">CPU cache (CPU core -> L1 -> L2 -> L3 -> RAM; cache line = 64byte) </i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">SIMD ??? (learn later) </i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Undefined behavior (crash, chạy đúng, chạy sai, optimize) </i></summary></details>
+
+---
+
+## 9. Debugging / Performance
+
+---
+
+<details> <summary><i style="color: grey">Benchmark/Profiling (đo hiệu năng) </i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">Big-O (O1, O(n),...) </i></summary></details>
+
+---
+
+<details> <summary>Experience</summary>
+
+#### 📘 Explanation
+Các tool cũng như các cách đã từng dùng để debug
+
+- multi-thread : ghi log + dùng DebugView để check realtime
+- crash app: phân tích file crash dump (*)
+- mem leak: Task manager, Diagnostic Tools (VisualStudio), _CrtSetDbgFlag (Add code và build mode debug)
+- Remote debug : Dùng msvsmon.exe (Remote Debugger)
+- check window app : Dùng spyxx để coi property và message đến app
+- test crash : Dùng Application Verifier để CT dễ crash hơn
+- Add action debug bằng visual thì có thể dùng template sau:
+    - `C++` : [$PID][$TID][{Environment.TickCount}] [$FUNCTION] - Text
+    - `C# :` [$PID][$TID][{System.DateTime.Now}] [$FUNCTION] - Text
+    - `Endline` : {"\n",s8b}
+---
+#### 📘 Cách set đường dẫn sinh file crash dump (*):
+
+1. Win + R → regedit
+2. Go to path below
+    ```
+    HKEY_LOCAL_MACHINE
+    └─ SOFTWARE
+        └─ Microsoft
+            └─ Windows
+                └─ Windows Error Reporting
+                    └─ LocalDumps
+    ```
+
+3. Setting as below
+
+    | Registry Key | Type | Value | Description |
+    |-------------|---------------|-----------------|-------------|
+    | (Default) | REG_SZ | (empty) | Giá trị mặc định |
+    | DumpCount | REG_DWORD | 10 | Số lượng file dump tối đa |
+    | DumpFolder | REG_EXPAND_SZ | E:\CrashDump | Thư mục lưu crash dump |
+    | DumpType | REG_DWORD | 2 | Loại dump được tạo |
+
+</details> <!-- end -->
 
 ---
 
@@ -1586,74 +1760,3 @@ int main() {
 * High-performance system design
 
 ---
-
-# 🎯 Priority nếu đi phỏng vấn C++ thực chiến
-
-## 🔴 MUST MASTER
-
-* Pointer / Reference
-* Memory management
-* OOP
-* STL
-* Multithreading basics
-* Smart pointers
-* Move semantics
-* RAII
-* Virtual function
-* `unordered_map` vs `map`
-* Deadlock
-* Race condition
-
----
-
-## 🟡 SHOULD KNOW
-
-* Template
-* Lock-free
-* Allocator
-* Cache locality
-* Compiler / linker
-* Design pattern
-
----
-
-## 🟢 BIG PLUS
-
-* Coroutines
-* Concepts
-* SIMD
-* Assembly reading
-* Linux internals
-* High-performance architecture
-
----
-
-# 📚 Roadmap học hiệu quả (không lan man)
-
-1. Core C++
-2. STL
-3. OOP
-4. Memory
-5. Multithreading
-6. Modern C++
-7. OS basics
-8. Design patterns
-9. Performance
-10. System design
-
----
-
-# 💡 Mẹo interview C++
-
-Người ta thường không chỉ hỏi “biết keyword không” 😅
-Họ thích hỏi kiểu:
-
-* “vector push_back realloc thế nào?”
-* “virtual function chạy ra sao?”
-* “mutex lock có cost gì?”
-* “shared_ptr vì sao chậm?”
-* “deadlock fix sao?”
-* “move semantics giúp gì?”
-* “cache locality ảnh hưởng performance thế nào?”
-
-=> Hiểu mechanism > thuộc definition 🔥
