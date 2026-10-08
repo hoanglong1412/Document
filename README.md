@@ -1,6 +1,6 @@
 # C++ 
 
-## 1. Core C++ Fundamentals
+## Core C++ Fundamentals
 
 <details> <summary>Variable / Scope / Lifetime</summary>
 
@@ -84,19 +84,19 @@ Lifetime = khoảng thời gian biến tồn tại trong memory.
 
 ---
 
-<details> <summary><i style="color: grey">Pointer / Reference</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Pointer / Reference</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">const</i></summary></details>
+<details> <summary><i style="color: grey">[✓] const</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">static</i></summary></details>
+<details> <summary><i style="color: grey">[✓] static</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">constexpr</i></summary></details>
+<details> <summary><i style="color: grey">[✓] constexpr</i></summary></details>
 
 ---
 
@@ -121,7 +121,28 @@ inline int add(int a, int b)
 
 ---
 
-<details> <summary><i style="color: grey">Enum / Enum class</i></summary></details>
+<details> <summary>Enum / Enum class</summary>
+
+#### 📘 Trick 
+
+Có thể loop qua enum bằng cách sau
+
+```cpp
+enum class MyEnum {
+    NONE = -1,
+    ENUM_1,
+    ENUM_2,
+    ENUM_3,
+    MAX
+};
+inline MyEnum begin(MyEnum) { return MyEnum::NONE; }
+inline MyEnum end(MyEnum) { return MyEnum::MAX; }
+inline MyEnum operator*(MyEnum colIdx) { return colIdx; }
+inline MyEnum& operator++(MyEnum& colIdx) {
+ return colIdx = MyEnum(std::underlying_type<MyEnum>::type(colIdx) + 1);
+}
+```
+#### </details> <!-- end --> 
 
 ---
 
@@ -141,7 +162,47 @@ using ulong = unsigned long; /* Prefer trong Modern C++ vì dễ đọc và hỗ
 
 ---
 
-<details> <summary><i style="color: grey">Macro (Note: BEFORE compiler compile C++ code)</i></summary></details>
+<details> <summary>Macro</summary>
+
+#### 📘 Explanation 
+
+- Replace text ở preprocessing (BEFORE compiler compile C++ code)
+- Cách chặn việc hiểu nhầm hàm của macro -> Thêm `()` ví dụ : `(std::min)(1,2)`
+- Có thể dùng kiểu `X-Macros` để giảm lặp code như ví dụ dưới
+
+    ```cpp
+    #define COLOR_LIST \
+        X(RED)   \
+        X(GREEN) \
+        X(BLUE)
+
+    typedef enum {
+    #define X(color) COLOR_##color,
+    COLOR_LIST
+    #undef X
+    } Color;
+
+    const char* color_strings[] = {
+    #define X(color) #color,
+    COLOR_LIST
+    #undef X
+    };
+
+    #define STRINGIFY(x) #x
+    unordered_map<Color, string> Color_To_String{
+    #define X(color) { COLOR_##color, STRINGIFY(COLOR_##color) },
+    COLOR_LIST
+    #undef X
+    };
+
+    unordered_map<string, Color> String_To_Color{
+    #define X(color) { STRINGIFY(COLOR_##color), COLOR_##color },
+    COLOR_LIST
+    #undef X
+    };
+    ```
+
+#### </details> <!-- end --> 
 
 ---
 
@@ -165,16 +226,16 @@ struct A {
 
 ---
 
-<details> <summary><i style="color: grey">Endianness (sắp xếp byte trái <-> phải)
+<details> <summary><i style="color: grey">[✓] Endianness (sắp xếp byte trái <-> phải)
 </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Lvalue (Có định danh - lấy được địa chỉ)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Lvalue (Có định danh - lấy được địa chỉ)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Rvalue (temporary value - ex: 5, x+1)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Rvalue (temporary value - ex: 5, x+1)</i></summary></details>
 
 ---
 
@@ -225,12 +286,12 @@ Note:
 
 ---
 
-<details> <summary><i style="color: grey">Function overloading (hàm cùng tên, khác param)
+<details> <summary><i style="color: grey">[✓] Function overloading (hàm cùng tên, khác param)
 </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Default arguments (từ phải -> trái; chạy lúc compile -> nếu virtual thì gọi default của Base chứ ko phải Derived)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Default arguments (từ phải -> trái; chạy lúc compile -> nếu virtual thì gọi default của Base chứ ko phải Derived)</i></summary></details>
 
 ---
 
@@ -268,17 +329,47 @@ int (*fp)(int, int);
 
 ---
 
-<details> <summary><i style="color: grey">std::function</i></summary></details>
+<details> <summary><i style="color: grey">[✓] std::function</i></summary></details>
 
 ---
 
-## 2. Object-Oriented Programming (OOP)
+<details> <summary>Exception</summary>
 
-<details> <summary><i style="color: grey">Class (blueprint) / Object (instance)</i></summary></details>
+#### 📘 Explanation
+
+- Exception xảy ra thì sẽ tìm catch gần nhất theo callstack, nếu tìm không thấy thì terminate
+- **Stack Unwinding** : khi đang tìm chỗ catch lúc runtime thì scope được rời khỏi lần lượt và destructor của các object local được gọi => RAII + exception safety
+- Khi đã tìm thấy catch thì sẽ xử lý ở catch đó và dừng lại => không tìm catch khác nữa
+- **Rethrow** : trong TH vẫn muốn tìm catch khác theo callstack thì gọi `throw` để tiếp tục throw ra ngoài
+- **noexcept** : Các hàm được đánh dấu `noexcept` có nghĩa là đảm bảo không xảy ra exception, TH xảy ra sẽ termiante
+- Destructor mặc định chính là noexcept => không được throw ở Destructor
+- Catch sẽ bắt theo thứ tự từ trên xuống, và sẽ dừng khi có 1 catch nhận được (trừ TH Rethrow) => cần sắp xếp catch theo thứ thự ưu tiên
+- Flow
+    ```
+    Exception
+      ↓
+    throw
+      ↓
+    find matching catch
+      ↓
+    stack unwinding
+      ↓
+    RAII destructors cleanup
+      ↓
+    catch
+    ```
+
+#### </details> <!-- end --> 
 
 ---
 
-<details> <summary><i style="color: grey">Constructor (default, param, copy, move,...) / Destructor</i></summary></details>
+## Object-Oriented Programming (OOP)
+
+<details> <summary><i style="color: grey">[✓] Class (blueprint) / Object (instance)</i></summary></details>
+
+---
+
+<details> <summary><i style="color: grey">[✓] Constructor (default, param, copy, move,...) / Destructor</i></summary></details>
 
 ---
 
@@ -361,7 +452,47 @@ ClassName& operator=(ClassName&& other) noexcept
 
 ---
 
-<details> <summary><i style="color: grey">Encapsulation (tính đóng gói - giấu data)</i></summary></details>
+<details> <summary>Operator cheatsheet</summary>
+
+#### 📘 Cheatsheet
+```
+Operator Cheatsheet 
+│ 
+├── Operator Overloading 
+│ ├── T operator+(const T& rhs) const { return /* T */; } 
+│ ├── bool operator==(const T& rhs) const { return /* bool */; } 
+│ ├── T* operator->() const { return ptr; } 
+│ ├── T& operator*() const { return *ptr; } 
+│ └── auto operator<=>(const T& rhs) const = default; 
+│ 
+├── Functor (Gọi object như hàm) 
+│ └── R operator()(/* params */) const { return /* R */; } 
+│ 
+├── Conversion Operator (Cho phép chuyển object thành type khác) 
+│ ├── operator bool() const { return /* bool */; } 
+│ ├── operator int() const { return /* int */; } 
+│ └── explicit operator T() const { return /* T */; } 
+│ 
+├── User-Defined Literal 
+│ └── constexpr T operator"" _km(long double value) { return /* T */; } 
+│ 
+├── Custom Memory Management 
+│ ├── static void* operator new(size_t size) { return ::operator new(size); } 
+│ └── static void operator delete(void* ptr) noexcept { ::operator delete(ptr); } 
+│ 
+├── Coroutine Customization 
+│ └── Awaiter operator co_await() { return /* Awaiter */; } 
+│ 
+└── Copy / Move Semantics 
+ ├── T& operator=(const T& rhs) { /* copy */ return *this; } 
+ └── T& operator=(T&& rhs) noexcept { /* move */ return *this; } 
+```
+
+#### </details> <!-- end --> 
+
+---
+
+<details> <summary><i style="color: grey">[✓] Encapsulation (tính đóng gói - giấu data)</i></summary></details>
 
 ---
 
@@ -380,23 +511,23 @@ class Derived : private Base    // -> Chuyển tất cả thành phần public/p
 
 ---
 
-<details> <summary><i style="color: grey">Polymorphism (đa hình - overload/override)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Polymorphism (đa hình - overload/override)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Abstraction (trừu tượng - ẩn xử lý phức tạp, chỉ thấy cái cần dùng)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Abstraction (trừu tượng - ẩn xử lý phức tạp, chỉ thấy cái cần dùng)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Virtual function (nhớ luôn thêm virtual cho destructor của Base Class)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Virtual function (Nếu gọi hàm virtual ở construtor thì hàm thực thi là hàm base, do lúc đó vptr đang trỏ tới base; nhớ luôn thêm virtual cho destructor của Base Class)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Pure virtual function</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Pure virtual function</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Abstract class</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Abstract class</i></summary></details>
 
 ---
 
@@ -425,15 +556,15 @@ Animal object
 
 ---
 
-<details> <summary><i style="color: grey">Override (ghi đè hàm lớp cha) / Final (ngăn không cho lớp con ghi đè hoặc kế thừa)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Override (ghi đè hàm lớp cha) / Final (ngăn không cho lớp con ghi đè hoặc kế thừa)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Friend class / function (cho phép hàm hoặc class bên ngoài truy cập vào các thành viên private/protected)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Friend class / function (cho phép hàm hoặc class bên ngoài truy cập vào các thành viên private/protected)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Multiple inheritance</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Multiple inheritance (thêm 1 kế thừa là thêm 1 vptr; thứ tự constutor từ trái -> phải; Destructor là ngược lại)</i></summary></details>
 
 ---
 
@@ -497,13 +628,13 @@ Cơ chế của C++ cho phép xác định chính xác kiểu dữ liệu thực
 
 ---
 
-## 3. Modern C++ (C++11 → C++23)
+## Modern C++ (C++11 → C++23)
 
-<details> <summary><i style="color: grey">auto</i></summary></details>
+<details> <summary><i style="color: grey">[✓] auto</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Range-based for `for (auto item : item_list)`</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Range-based for `for (auto item : item_list)`</i></summary></details>
 
 ---
 
@@ -520,7 +651,7 @@ Là các lớp bao bọc (RAII wrapper) giúp quản lý bộ nhớ tự động
 
 ---
 
-<details> <summary><i style="color: grey">nullptr</i></summary></details>
+<details> <summary><i style="color: grey">[✓] nullptr</i></summary></details>
 
 ---
 
@@ -543,11 +674,11 @@ decltype((x)) a_2 = x;  // typeof(a_2) => int& (Tham chiếu)
 
 ---
 
-<details> <summary><i style="color: grey">Structured binding (unpack giá trị cấu trúc hoặc mảng, ví dụ: `auto [x, y] = p;`)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Structured binding (unpack giá trị cấu trúc hoặc mảng, ví dụ: `auto [x, y] = p;`)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">std::optional (Hộp chứa giá trị có thể có hoặc trống, ví dụ: `std::optional<int>` -> nhận `std::nullopt` hoặc gọi hàm `.has_value()`)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] std::optional (Hộp chứa giá trị có thể có hoặc trống, ví dụ: `std::optional<int>` -> nhận `std::nullopt` hoặc gọi hàm `.has_value()`)</i></summary></details>
 
 ---
 
@@ -606,15 +737,15 @@ int x = std::any_cast<int>(value); // Nếu ép sai kiểu sẽ ném ra ngoại 
 
 ---
 
-<details> <summary><i style="color: grey">std::span (Vùng xem liên tục mảng dữ liệu, dùng thay thế an toàn cho cấu trúc con trỏ thô kết hợp biến kích thước `T* + size`)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] std::span (Vùng xem liên tục mảng dữ liệu, dùng thay thế an toàn cho cấu trúc con trỏ thô kết hợp biến kích thước `T* + size`)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Concepts (C++20: Cơ chế ràng buộc điều kiện cho Template tại thời điểm Compile-time, dùng thay thế sạch sẽ cho `std::enable_if` của SFINAE)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Concepts (C++20: Cơ chế ràng buộc điều kiện cho Template tại thời điểm Compile-time, dùng thay thế sạch sẽ cho `std::enable_if` của SFINAE)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Coroutines (C++20: Các hàm bất đồng bộ có khả năng tạm dừng và tiếp tục thực thi, sử dụng thông qua các từ khóa `co_await`, `co_yield`, `co_return`)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Coroutines (C++20: Các hàm bất đồng bộ có khả năng tạm dừng và tiếp tục thực thi, sử dụng thông qua các từ khóa `co_await`, `co_yield`, `co_return`)</i></summary></details>
 
 ---
 
@@ -641,27 +772,7 @@ int main() {
 
 ---
 
-<details> <summary>User-defined literals</summary>
-
-#### 📘 Explanation
-Tính năng cho phép lập trình viên tự tạo các hậu tố (suffix) tùy chỉnh cho các hằng số, giúp mã nguồn tường minh hơn bằng cách gắn các đơn vị đo lường vật lý trực tiếp vào mã nguồn.
-
-```cpp
-// Định nghĩa cấu trúc toán tử hậu tố bắt đầu bằng dấu gạch dưới _
-long double operator"" _km(long double value)
-{
-    return value * 1000; // Quy đổi km ra mét
-}
-
-// Cách áp dụng thực tế
-auto meters = 1.5_km; // Kết quả trả về 1500.0
-```
-
-#### </details> <!-- end --> 
-
----
-
-## 4. Multithreading / Concurrency
+## MultiProcess / Multithreading / Concurrency
 
 <details> <summary>Process</summary>
 
@@ -672,7 +783,123 @@ Tiến trình (Process) là một chương trình đang thực thi và được 
 * Một ứng dụng lớn có thể chạy đồng thời nhiều Process (ví dụ: Google Chrome chia mỗi tab thành một tiến trình riêng).
 * Các Process không dùng chung bộ nhớ; muốn giao tiếp với nhau phải sử dụng các cơ chế IPC (Inter-Process Communication) như Shared Memory, Pipes, Sockets.
 
-#### </details> <!-- end --> 
+#### 📘 IPC (Inter-Process Communication)
+
+| Cách IPC | Mô hình truyền dữ liệu | Phạm vi | Ưu điểm | Điểm cần lưu ý |
+| :--- | :--- | :--- | :--- | :--- |
+| **Pipe (ống dẫn vô danh)** | Luồng byte một chiều | Các tiến trình có quan hệ, thường là cha–con | Đơn giản, phù hợp truyền dữ liệu tuần tự | Không giữ ranh giới giữa các thông điệp |
+| **Named Pipe / FIFO** | Luồng byte một chiều | Các tiến trình trên cùng máy | Các tiến trình không cần có quan hệ cha–con | Cần thống nhất cách đóng gói dữ liệu |
+| **Message Queue** | Hàng đợi các thông điệp riêng biệt | Thường trên cùng máy | Giữ ranh giới thông điệp, gửi và nhận không cần diễn ra cùng lúc | Bị giới hạn kích thước hàng đợi và thông điệp |
+| **Shared Memory** | Nhiều tiến trình cùng đọc/ghi một vùng nhớ | Cùng máy | Tránh sao chép dữ liệu qua lại sau khi thiết lập | Phải tự đồng bộ để tránh *data race* |
+| **Semaphore** | Bộ đếm/tín hiệu đồng bộ | Thường trên cùng máy | Điều phối quyền truy cập tài nguyên | Không dùng để truyền nội dung dữ liệu |
+| **Signal** | Thông báo sự kiện ngắn | Cùng máy | Gửi thông báo nhanh như dừng hoặc đánh thức | Chỉ truyền rất ít thông tin; xử lý signal có nhiều giới hạn |
+| **Socket** | Luồng byte (TCP) hoặc datagram (UDP) | Cùng máy hoặc qua mạng | Linh hoạt, hỗ trợ ứng dụng phân tán | Cần xử lý kết nối, giao thức và lỗi mạng |
+| **RPC** | Gọi hàm/dịch vụ qua một giao thức | Cùng máy hoặc qua mạng | Giao diện gần giống lời gọi hàm thông thường | Vẫn có độ trễ và lỗi truyền thông; cần tuần tự hóa dữ liệu |
+
+
+---
+
+<details>
+<summary>IPC Detail</summary>
+
+### 🔹 Pipe
+
+> Hệ điều hành tạo một vùng đệm. Tiến trình ghi byte vào một đầu; tiến trình khác đọc byte từ đầu còn lại.
+
+```text
+Process A ── write() ──► [ Kernel Buffer ] ── read() ──► Process B
+```
+
+- **Pipe vô danh:** Thường được tạo trước `fork()`, để tiến trình cha và con cùng sử dụng.
+- **Named Pipe / FIFO:** Có tên trong hệ thống tệp, nên các tiến trình không có quan hệ cha–con cũng có thể mở nó.
+- Một pipe thông thường truyền theo **một chiều**; muốn trao đổi hai chiều có thể dùng hai pipe.
+- Pipe là **luồng byte**: một lần `read()` không nhất thiết tương ứng với một lần `write()`. Ứng dụng cần tự quy định độ dài hoặc ký tự phân cách thông điệp.
+
+---
+
+### 🔹 Message Queue
+
+> Bên gửi đặt từng thông điệp vào hàng đợi; bên nhận lấy chúng ra sau đó.
+
+```text
+Process A ── send(M1) ──► ┌────┬────┬────┐ ── receive() ──► Process B
+                          │ M1 │ M2 │ M3 │
+                          └────┴────┴────┘
+```
+
+- **Giữ ranh giới thông điệp:** Bên nhận lấy một thông điệp, không phải một đoạn byte tùy ý như pipe.
+- Hai tiến trình không nhất thiết phải chạy hoặc gọi gửi/nhận tại cùng một thời điểm, miễn hàng đợi còn tồn tại và còn chỗ.
+- Có giới hạn về dung lượng và kích thước thông điệp; hành vi khi hàng đợi đầy phụ thuộc API và chế độ chặn/không chặn.
+
+---
+
+### 🔹 Shared Memory
+
+> Hai tiến trình ánh xạ cùng một vùng nhớ vào không gian địa chỉ của mình. Sau khi thiết lập, chúng truy cập dữ liệu trực tiếp.
+
+```text
+Process A ── read/write ──► [ Shared Memory ] ◄── read/write ── Process B
+```
+
+Phù hợp khi trao đổi **lượng dữ liệu lớn** hoặc cập nhật thường xuyên. Tuy nhiên, nếu hai bên cùng sửa dữ liệu, kết quả có thể sai do *data race*.
+
+### 🔹 Semaphore
+
+> Semaphore điều phối thời điểm tiến trình được truy cập vùng nhớ hoặc tài nguyên chung.
+
+```text
+Process A: wait() → ghi Shared Memory → post()
+Process B: wait() → đọc Shared Memory → post()
+```
+
+Trong thực tế, có thể dùng **mutex**, **semaphore** hoặc cơ chế đồng bộ phù hợp khác. Semaphore không tự mang nội dung cần trao đổi; dữ liệu vẫn nằm trong Shared Memory hoặc một kênh IPC khác.
+
+---
+
+### 🔹 Signal
+
+> Một tiến trình hoặc hệ điều hành gửi tín hiệu để báo cho tiến trình khác rằng một sự kiện đã xảy ra.
+
+```text
+Process A ── signal ──► Process B
+                         └─ xử lý sự kiện / dừng / tiếp tục
+```
+
+Ví dụ trên hệ Unix là `SIGTERM` để yêu cầu kết thúc tiến trình. Signal thích hợp cho **thông báo ngắn**, không thích hợp để truyền một khối dữ liệu. Khi cần gửi dữ liệu, hãy kết hợp nó với kênh IPC khác.
+
+---
+
+### 🔹 Socket
+
+> Mỗi tiến trình dùng một socket làm điểm gửi/nhận dữ liệu.
+
+```text
+Process A ── Socket A ◄──── mạng / hệ điều hành ────► Socket B ── Process B
+```
+
+- **TCP:** Truyền luồng byte tin cậy, có thứ tự. Ứng dụng vẫn phải tự xác định ranh giới thông điệp.
+- **UDP:** Truyền từng datagram; ứng dụng cần xử lý khả năng mất gói hoặc sai thứ tự khi cần.
+- **Unix domain socket:** Dùng giữa các tiến trình trên cùng máy, không cần đi qua mạng IP.
+
+### 🔹 RPC (Remote Procedure Call)
+
+> RPC xây trên một kênh truyền như socket, đóng gói yêu cầu và phản hồi thành lời gọi dịch vụ.
+
+```text
+Client: getUser(42)
+          │
+          ▼
+    [ Mã hóa → Truyền → Giải mã ]
+          │
+          ▼
+Server: xử lý → trả kết quả
+```
+
+RPC giúp tổ chức giao tiếp theo các hàm/dịch vụ, nhưng lời gọi vẫn có thể chậm, hết thời gian chờ hoặc thất bại do kết nối.
+
+
+ </details>
+</details> <!-- end --> 
 
 ---
 
@@ -739,12 +966,12 @@ Cơ chế đồng bộ hóa luồng, đảm bảo tại một thời điểm ch�
 
 ---
 
-<details> <summary><i style="color: grey">Recursive mutex (Cùng một thread lock nhiều lần mà không bị deadlock - dùng lock-count để biết có log không)
+<details> <summary><i style="color: grey">[✓] Recursive mutex (Cùng một thread lock nhiều lần mà không bị deadlock - dùng lock-count để biết có log không)
 </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Spinlock (Cơ chế lặp vòng liên tục để kiểm tra trạng thái khóa thay vì đưa luồng vào trạng thái ngủ như Mutex thông thường)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Spinlock (Cơ chế lặp vòng liên tục để kiểm tra trạng thái khóa thay vì đưa luồng vào trạng thái ngủ như Mutex thông thường)</i></summary></details>
 
 ---
 
@@ -809,16 +1036,16 @@ Giải quyết: Dùng `std::atomic` kết hợp các Memory Ordering để đặ
 
 ---
 
-<details> <summary><i style="color: grey">Deadlock (các thread chờ lẫn nhau)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Deadlock (các thread chờ lẫn nhau)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Livelock (các thread vẫn chạy nhưng không có tiến triển - chạy lòng vòng)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Livelock (các thread vẫn chạy nhưng không có tiến triển - chạy lòng vòng)</i></summary></details>
 
 
 ---
 
-<details> <summary><i style="color: grey">Starvation (thread bị bỏ đói, không bao giờ được chạy)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Starvation (thread bị bỏ đói, không bao giờ được chạy)</i></summary></details>
 
 ---
 
@@ -1006,7 +1233,7 @@ void writer()
 
 ---
 
-## 5. Memory Management
+## Memory Management
 
 <details> <summary>new/delete - malloc/free</summary>
 
@@ -1039,19 +1266,19 @@ void writer()
 
 ---
 
-<details> <summary><i style="color: grey">Memory leak (cấp phát nhưng không release)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Memory leak (cấp phát nhưng không release)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Resource leak (FILE*, Socket, Mutex, Handle, Database Connection)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Resource leak (FILE*, Socket, Mutex, Handle, Database Connection)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Dangling pointer (memory còn nhưng object mất - delete nhưng ko set về nullptr)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Dangling pointer (memory còn nhưng object mất - delete nhưng ko set về nullptr)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Double free (delete 2 lần -> có thể gây crash hoặc unexpected behavior)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Double free (delete 2 lần -> có thể gây crash hoặc unexpected behavior)</i></summary></details>
 
 ---
 
@@ -1070,11 +1297,11 @@ p->~MyClass(); // ko gọi delete do bộ nhớ ko phải do object quản lý
 
 ---
 
-<details> <summary><i style="color: grey">Custom allocator (Tạo memory pool rồi dùng dần)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Custom allocator (Tạo memory pool rồi dùng dần)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Fragmentation (memory bị chia nhỏ và phân tán -> truy xuất chậm)</i></summary></details> 
+<details> <summary><i style="color: grey">[✓] Fragmentation (memory bị chia nhỏ và phân tán -> truy xuất chậm)</i></summary></details> 
 
 ---
 
@@ -1091,16 +1318,16 @@ Lưu data hay được dùng (*) vào bộ nhớ đệm CPU để truy xuất nh
 
 ---
 
-<details> <summary><i style="color: grey">Virtual memory (Mỗi process một vùng nhớ ảo riêng, vùng ảo này map với vùng thật ở RAM)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Virtual memory (Mỗi process một vùng nhớ ảo riêng, vùng ảo này map với vùng thật ở RAM)</i></summary></details>
 
 ---
 
 
-<details> <summary><i style="color: grey">Paging (Kỹ thuật ánh xạ virtual memory vào Physical memory, page map với Frame, ko cần liên tục trong bộ nhớ)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Paging (Kỹ thuật ánh xạ virtual memory vào Physical memory, page map với Frame, ko cần liên tục trong bộ nhớ)</i></summary></details>
 
 ---
 
-## 6. STL
+## STL
 
 ### Container
 
@@ -1488,7 +1715,7 @@ int main() {
 
 ---
 
-## 7. Template & Metaprogramming
+## Template & Metaprogramming
 
 <details> <summary>Function template </summary>
 
@@ -1511,7 +1738,7 @@ T add(T a, T b)
 
 ---
 
-<details> <summary><i style="color: grey">Class template (tương tự trên nhưng cho class)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Class template (tương tự trên nhưng cho class)</i></summary></details>
 
 ---
 
@@ -1531,11 +1758,11 @@ void print<bool>(bool value)
 
 ---
 
-<details> <summary><i style="color: grey">Partial specialization (Not Yet)</i></summary></details>
+<details> <summary><i style="color: grey">[ ] Partial specialization ??? (learn later)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Variadic template (Nhận N tham số)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Variadic template (Nhận N tham số)</i></summary></details>
 
 ---
 
@@ -1591,89 +1818,114 @@ int main() {
 
 ---
 
-<details> <summary><i style="color: grey">TMP (Template Meta Programming) - Dùng template để tính lúc compile (giờ đã được thay 1 phần bởi constexpr</i></summary></details>
+<details> <summary><i style="color: grey">[✓] TMP (Template Meta Programming) - Dùng template để tính lúc compile (giờ đã được thay 1 phần bởi constexpr</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Fold expression (cú pháp C++17 để gộp param pack ...)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Fold expression (cú pháp C++17 để gộp param pack ...)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Perfect forwarding (truyền đúng kiểu dữ liệu (Lvalue/Rvalue) bằng std::forward</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Perfect forwarding (truyền đúng kiểu dữ liệu (Lvalue/Rvalue) bằng std::forward</i></summary></details>
 
 ---
 
-## 8. OS / System / Low-Level
+## OS / System / Low-Level
 
-<details> <summary><i style="color: grey">System call (User Mode yêu cầu Kernel làm việc (thao tác trên RAM, đọc file..))</i></summary></details>
-
----
-
-<details> <summary><i style="color: grey">Context switch (chuyển ngữ cảnh, chuyển thread)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] System call (User Mode yêu cầu Kernel làm việc (thao tác trên RAM, đọc file..))</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Kernel vs User mode (1 cái tác động được tới hard, 1 cái không)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Context switch (chuyển ngữ cảnh, chuyển thread)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Process memory layout (Memory Layout)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Kernel vs User mode (1 cái tác động được tới hard, 1 cái không)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Static library .lib (thư viện tĩnh, add vào src làm nặng src)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Process memory layout (Memory Layout)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Dynamic library .dll (thư viện động, load runtime)</i></summary></details>
+<details> <summary>Static library (lib) </summary>
+
+#### 📘 Explanation
+- Thư viện tĩnh
+- File *.lib chứa compiled code
+- Exe gọi phải copy source ở file *.lib làm nặng source
+#### 📘 Cách dùng
+- Config : 
+    - Add *.lib vào Additional Dependencies (cần đúng đường dẫn)
+    - Add references nếu source lib cùng sln với src exe
+- Coding : `#pragma comment(lib, "<path>//MyMath.lib")`
+- Usage : Gọi hàm bình thường, có thể f12, f11 để vào hàm
+</details> <!-- end -->
 
 ---
 
-<details> <summary><i style="color: grey">Symbol linking (khi build thì ra các symbol như ?Draw@@YAXXZ, linker tìm Declaration/Definition để nối)</i></summary></details>
+<details> <summary>Dynamic library (dll) </summary>
+
+#### 📘 Explanation
+- Thư viện động
+- File *.lib (Import Library) chỉ chứa linker
+- File *.dll chứa source compile
+- Dll là file, khi được load thì đọc file rồi thực thi, chứ dll không phải một dạng chạy ngầm
+- TH load Run-time có thể hack nên cần để ý security
+#### 📘 Cách dùng
+- Load-time / Implicit Linking (tương tự như dùng static lib)
+- Run-time / Explicit Linking
+    - Load theo tên dll, tên hàm (LoadLibrary, GetProcAddress)
+    - Gọi thông qua function pointer
+
+</details> <!-- end -->
 
 ---
 
-<details> <summary><i style="color: grey">ABI ??? (learn later)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Symbol linking (khi build thì ra các symbol như ?Draw@@YAXXZ, linker tìm Declaration/Definition để nối)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Name mangling (tự gen tên hàm khi compile, xử lý cho overloading biết gọi hàm nào)</i></summary></details>
+<details> <summary><i style="color: grey">[ ] ABI ??? (learn later)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Name mangling (tự gen tên hàm khi compile, xử lý cho overloading biết gọi hàm nào)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] Name mangling (tự gen tên hàm khi compile, xử lý cho overloading biết gọi hàm nào)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Compiler stages - thứ tự compile (source -> preprocessor -> compiler -> assembler -> linker -> exe/dll)</i></summary></details>
+<details> <summary><i style="color: grey">[✓] extern "C" (linking theo chuẩn C, hàm tên sao giữ vậy chứ không thêm symbol kiểu Draw@@YAXXZ như C++)</i></summary></details>
+
+---
+<details> <summary><i style="color: grey">[✓] Compiler stages - thứ tự compile (source -> preprocessor -> compiler -> assembler -> linker -> exe/dll)</i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Assembly basics ??? (learn later) </i></summary></details>
+<details> <summary><i style="color: grey">[ ] Assembly basics ??? (learn later) </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">CPU cache (CPU core -> L1 -> L2 -> L3 -> RAM; cache line = 64byte) </i></summary></details>
+<details> <summary><i style="color: grey">[✓] CPU cache (CPU core -> L1 -> L2 -> L3 -> RAM; cache line = 64byte) </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">SIMD ??? (learn later) </i></summary></details>
+<details> <summary><i style="color: grey">[ ] SIMD ??? (learn later) </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Undefined behavior (crash, chạy đúng, chạy sai, optimize) </i></summary></details>
+<details> <summary><i style="color: grey">[✓] Undefined behavior (crash, chạy đúng, chạy sai, optimize) </i></summary></details>
 
 ---
 
-## 9. Debugging / Performance
+## Debugging / Performance
 
 ---
 
-<details> <summary><i style="color: grey">Benchmark/Profiling (đo hiệu năng) </i></summary></details>
+<details> <summary><i style="color: grey">[✓] Benchmark/Profiling (đo hiệu năng) </i></summary></details>
 
 ---
 
-<details> <summary><i style="color: grey">Big-O (O1, O(n),...) </i></summary></details>
+<details> <summary><i style="color: grey">[✓] Big-O (O1, O(n),...) </i></summary></details>
 
 ---
 
@@ -1719,44 +1971,6 @@ Các tool cũng như các cách đã từng dùng để debug
 
 ---
 
-## 🏗️ 10. Design Patterns
-
-* Singleton
-* Factory
-* Abstract Factory
-* Builder
-* Observer
-* Strategy
-* Adapter
-* Decorator
-* Command
-* Dependency Injection
-
----
-
-## 🌐 11. Networking (bonus cực mạnh)
-
-* TCP/IP
-* Socket
-* HTTP/HTTPS
-* REST API
-* WebSocket
-* Serialization
-* Protobuf
-
----
-
-## 🧱 12. Architecture / Real Project
-
-* SOLID
-* Clean Architecture
-* Layered Architecture
-* Event-driven
-* Producer Consumer
-* Thread-safe design
-* Logging system
-* Plugin system
-* Message queue
-* High-performance system design
-
----
+## QA & Trick
+- custom deleter c++ là gì ---> `unique_ptr<T,custom_delete>` thay vì gọi delete T khi giải phóng thì sẽ gọi custom_delete
+- Size của class không có biến member => 1 byte
